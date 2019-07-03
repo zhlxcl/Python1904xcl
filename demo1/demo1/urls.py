@@ -25,5 +25,5 @@ from django.conf.urls import url,include
 # 项目根路由：用户在浏览器中输入的网址需要和路由匹配
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url('booktest/',include('booktest.urls'))
+    url('',include('booktest.urls'))
 ]

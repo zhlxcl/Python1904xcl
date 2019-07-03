@@ -6,8 +6,8 @@ from . import views
 
 # 应用路由配置
 urlpatterns = [
-    url(r'^index/$',views.index),
+    url(r'^$',views.index),
     url(r'^list/$',views.list),
-    url(r'^detail/$',views.detail),
+    url(r'^detail/(\d+)/$',views.detail),
 
 ]
