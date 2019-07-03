@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>列表页</title>
+</head>
+<body>
+    <h2>列表页</h2>
+    <h3>当前拥有的书：</h3>
+    <a href="/">返回首页</a>
+    <ul>
+        {% for book in books %}
+            <li>
+                <a href="/detail/{{ book.id }}/">{{ book.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

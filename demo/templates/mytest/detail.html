@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情页</title>
+</head>
+<body>
+    <h2>详情页</h2>
+    <h3>当前书籍为：{{ book.title }}</h3>
+
+    {% if book.myhero_set.count %}
+        <h4>拥有的角色：</h4>
+        <ul>
+            {% for hero in book.myhero_set.all %}
+                <ul>{{hero.name}}---{{hero.content}}</ul>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h4>没有角色</h4>
+    {% endif %}
+
+    <a href="/list/">返回列表页</a>
+</body>
+</html>
