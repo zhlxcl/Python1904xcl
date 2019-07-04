@@ -16,7 +16,9 @@ class BookInfo(models.Model):
 # 创建一个HeroInfo的数据模型，用来生成一个英雄信息数据表
 class HeroInfo(models.Model):
     name = models.CharField(max_length=20)
-    gender = models.BooleanField(default=True)
+    # gender = models.BooleanField(default=True)
+    gender = models.CharField(max_length=5,choices=(("man","男"),("woman","女")))
+    type = models.CharField(max_length=5,choices=(("good","好人"),("bad","坏人")),default="good")
     content = models.CharField(max_length=100)
     book = models.ForeignKey(BookInfo,on_delete=models.CASCADE)
 

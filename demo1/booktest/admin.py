@@ -31,7 +31,7 @@ admin.site.register(BookInfo,BookInfoAdmin)
 
 
 class HeroInfoAdmin(admin.ModelAdmin):
-    list_display = ["name","content","book"]
+    list_display = ["name","gender","content","book"]
 
     # 添加title和content作为搜索条件字段，book外键
     search_fields = ["name","content"]

@@ -25,5 +25,13 @@ from django.conf.urls import url,include
 # 项目根路由：用户在浏览器中输入的网址需要和路由匹配
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url('',include('booktest.urls'))
+    # 在项目根路由下通过url以及include指明应用路由的配置文件
+    url('',include('booktest.urls',namespace="booktest")),
 ]
+
+
+"""
+匹配（参数问题）：
+1.输入网址格式需要和路由有列表格式匹配（）
+2.路由列表格式需要和视图函数格式匹配（）
+"""
