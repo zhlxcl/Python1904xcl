@@ -13,3 +13,23 @@ class MyHero(models.Model):
     book = models.ForeignKey(MyBook,on_delete=models.CASCADE)
     def __str__(self):
         return self.name
+
+
+
+# 数据库关系
+
+# 一对一
+class Account(models.Model):
+    name = models.CharField(max_length=20)
+
+class Inform(models.Model):
+    phone = models.CharField(max_length=11)
+    account = models.OneToOneField(Account,on_delete=models.CASCADE)
+
+# 多对多
+class Host(models.Model):
+    hostname = models.CharField(max_length=32)
+
+class Application(models.Model):
+    name = models.CharField(max_length=32)
+    h = models.ManyToManyField(to='Host')
