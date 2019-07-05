@@ -107,14 +107,18 @@ def addhero(request,id):
         name = request.POST.get("username")
         content = request.POST.get("content")
         gender = request.POST.get("gender")
-        type = request.POST.get("type")
-        hero = HeroInfo()
-        hero.name = name
-        hero.gender = gender
-        hero.type = type
-        hero.content = content
-        hero.book = book
-        hero.save()
+        herotype = request.POST.get("type")
+        # hero = HeroInfo()
+        # hero.name = name
+        # hero.gender = gender
+        # hero.type = herotype
+        # hero.content = content
+        # hero.book = book
+        # hero.save()
+
+        # 调用模型管理器
+        HeroInfo.myobjects.addhero(name,gender,herotype,content,book)
+
         return redirect(reverse("booktest:detail", args=(id,)))
 
 def deletehero(request,id):

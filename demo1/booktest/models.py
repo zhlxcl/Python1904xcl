@@ -13,6 +13,18 @@ class BookInfo(models.Model):
     def __str__(self):
         return self.title
 
+# 模型管理器
+class HeroInfoManage(models.Manager):
+    def addhero(self,_name,_gender,_herotype,_content,_book):
+        hero = HeroInfo()
+        hero.name = _name
+        hero.gender = _gender
+        hero.type = _herotype
+        hero.content = _content
+        hero.book = _book
+        hero.save()
+
+
 # 创建一个HeroInfo的数据模型，用来生成一个英雄信息数据表
 class HeroInfo(models.Model):
     name = models.CharField(max_length=20)
@@ -21,6 +33,8 @@ class HeroInfo(models.Model):
     type = models.CharField(max_length=5,choices=(("good","好人"),("bad","坏人")),default="good")
     content = models.CharField(max_length=100)
     book = models.ForeignKey(BookInfo,on_delete=models.CASCADE)
+
+    myobjects = HeroInfoManage()
 
     def __str__(self):
         return self.name
