@@ -20,15 +20,15 @@
         <br><br>
         <div id="con">
             <br><br>
-            <h3><p class="text-center">当前问题是：{{ questions.title }}</p></h3>
+            <h3><p class="text-center">当前问题是：{{ question.title }}</p></h3>
             <h3><p class="text-center">投票结果：</p></h3>
             <br>
 
-            {% for choice in questions.choice_set.all %}
-                {{ choice.title }}-------{{ choice.votesnum }}<br><br>
+            {% for choice in question.choice_set.all %}
+                {{ forloop.counter }}  . {{ choice.title }}-------{{ choice.votesnum }}票<br><br>
             {% endfor %}
 
-
+            <a href="{% url 'myvote:questionlist' %}">问题列表页</a>
 
         </div>
     </div>

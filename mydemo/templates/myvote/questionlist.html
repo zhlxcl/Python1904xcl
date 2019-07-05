@@ -24,9 +24,7 @@
             <br>
             <ul>
                 {% for question in questions %}
-                <li>
-                    <a href="{% url 'myvote:choicelist' question.id %}">{{ question.title }}</a>
-                </li><br>
+                    {{ forloop.counter }} . <a href="{% url 'myvote:choicelist' question.id %}">{{ question.title }}</a><br><br>
                 {% endfor %}
             </ul>
 

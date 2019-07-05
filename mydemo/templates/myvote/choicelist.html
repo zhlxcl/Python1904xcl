@@ -20,13 +20,18 @@
         <br><br>
         <div id="con">
             <br><br>
-            <h3><p class="text-center">当前问题是：{{ questions.title }}</p></h3>
+            <h3><p class="text-center">当前问题是：{{ question.title }}</p></h3>
             <h3><p class="text-center">请填写选项进行投票：</p></h3>
             <br>
 
-            <form class="form-horizontal" action="" method="post" >
-                {% for choice in questions.choice_set.all %}
-                <input type="radio" name="choice" value="{{ choice.id }}">{{ choice.title }}<br><br>
+            <form class="form-horizontal" action="{% url 'myvote:choicelist' question.id %}" method="post" >
+                {% for choice in question.choice_set.all %}
+                    {% if forloop.counter == 1 %}
+                        <input type="radio" checked name="choice" value="{{ choice.id }}">{{ choice.title }}<br><br>
+                    {% else %}
+                        <input type="radio" name="choice" value="{{ choice.id }}">{{ choice.title }}<br><br>
+                    {% endif %}
+
                 {% endfor %}
 
                 <br>
