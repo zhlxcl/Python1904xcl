@@ -13,9 +13,20 @@ from .models import Questions,Choice
 
 
 # 装饰器
+# 1.使用cookie的装饰器
+# def checklogin(fun):
+#     def check(request,*args):
+#         username = request.COOKIES.get("username")
+#         if username:
+#             return fun(request,*args)
+#         else:
+#             return redirect(reverse("myvote:login"))
+#     return check
+
+#2.使用session的装饰器
 def checklogin(fun):
     def check(request,*args):
-        username = request.COOKIES.get("username")
+        username = request.session.get("username")
         if username:
             return fun(request,*args)
         else:
@@ -29,17 +40,24 @@ def login(request):
         return render(request, "myvote/login.html")
     elif request.method == "POST":
         # 检测用户名密码是否对应
-        # 登录成功需要存储cookie
-        response = redirect(reverse("myvote:index"))
-        # 存储cookie值
-        response.set_cookie("username",request.POST.get("username"))
-        return response
+        # 1.登录成功需要存储cookie（cookie是在response中设置的）
+        # response = redirect(reverse("myvote:index"))
+        # # 存储cookie值
+        # response.set_cookie("username",request.POST.get("username"))
+        # return response
+        # 2.使用session存储数据（session是在request中设置的）
+        request.session["username"] = request.POST.get("username")
+        return redirect(reverse("myvote:index"))
 
 def logout(request):
-    # 删除cookie值
-    res = redirect(reverse("myvote:login"))
-    res.delete_cookie("username")
-    return res
+    # 1.删除cookie值
+    # res = redirect(reverse("myvote:login"))
+    # res.delete_cookie("username")
+    # return res
+    # 2.删除session值
+    request.session.flush()
+    return redirect(reverse("myvote:login"))
+
 
 
 @checklogin
@@ -51,7 +69,12 @@ def index(request):
     #     return render(request, "myvote/index.html",locals())
     # else:
     #     return redirect(reverse("myvote:login"))
-    username = request.COOKIES.get("username")
+
+    # 1.使用cookie获取值
+    # username = request.COOKIES.get("username")
+    # 2.使用session获取值
+    username = request.session.get("username")
+
     questions = Questions.objects.all()
     return render(request, "myvote/index.html",locals())
 
