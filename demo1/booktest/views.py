@@ -7,7 +7,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.template import loader
 
 # 导入模型
-from .models import BookInfo,HeroInfo
+from .models import BookInfo,HeroInfo,Ads
 
 # MVT中的核心V视图，作用是：接收请求，处理数据，返回响应
 # Create your views here.
@@ -22,8 +22,8 @@ class IndexView(View):
 
 class IndexTemplateView(TemplateView):
     template_name = "booktest/index.html"
-    def get_context_data(self):
-        return {"name":"xcl"}
+    def get_context_data(self,*kwargs):
+        return {"name":"xcl","ads":Ads.objects.all()}
 
 class ListView(ListView):
     # 指定模型
@@ -135,3 +135,17 @@ def deletehero(request,id):
     # return redirect("/detail/" + str(bookid) + "/" )
     # 3.
     return redirect(reverse("booktest:detail",args=(bookid,)))
+
+
+
+class UploadAdsView(View):
+    def get(self,request):
+        return render(request, "booktest/uploadads.html")
+
+    def post(self,request):
+
+        ads = Ads()
+        ads.desc = request.POST.get("desc")
+        ads.img = request.FILES["uploadimg"]
+        ads.save()
+        return HttpResponse("上传成功")

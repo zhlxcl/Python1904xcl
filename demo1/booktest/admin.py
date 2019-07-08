@@ -43,3 +43,5 @@ class HeroInfoAdmin(admin.ModelAdmin):
 
 # 注册HeroInfo模型类
 admin.site.register(HeroInfo,HeroInfoAdmin)
+
+admin.site.register(Ads)

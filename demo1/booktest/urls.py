@@ -25,6 +25,9 @@ urlpatterns = [
 
     url(r'^addbook/$',views.addbook,name="addbook"),
     url(r'^addhero/(\d+)/$',views.addhero,name="addhero"),
+
+
+    url(r'^uploadads/$',views.UploadAdsView.as_view(),name="uploadads"),
 ]
 
 
