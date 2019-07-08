@@ -3,7 +3,7 @@ from django.shortcuts import render,reverse,redirect
 # Create your views here.
 
 # 导入响应模块
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect,Http404
 
 # 导入获取模板的模块
 from django.template import loader
@@ -20,7 +20,14 @@ def questionlist(request):
     return render(request, "myvote/questionlist.html", {"questions": questions})
 
 def choicelist(request,id):
-    question = Questions.objects.get(pk=id)
+    try:
+        question = Questions.objects.get(pk=id)
+    except Questions.DoesNotExist:
+        return HttpResponse("id非法")
+    except Questions.MultipleObjectsReturned:
+        return HttpResponse("id非法")
+
+
     if request.method == "GET":
 
         return render(request, "myvote/choicelist.html", {"question": question})
