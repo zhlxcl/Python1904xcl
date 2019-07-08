@@ -1,4 +1,4 @@
-from django.shortcuts import render,reverse,redirect
+from django.shortcuts import render,reverse,redirect,get_object_or_404
 
 # Create your views here.
 
@@ -12,19 +12,51 @@ from django.template import loader
 from .models import Questions,Choice
 
 
+# 装饰器
+def checklogin(fun):
+    def check(request,*args):
+        username = request.COOKIES.get("username")
+        if username:
+            return fun(request,*args)
+        else:
+            return redirect(reverse("myvote:login"))
+    return check
+
+
 def login(request):
-    if request.method == "POST":
-        # HttpResponse.set_cookie("username",username)
-        return redirect(reverse("myvote:index"))
+
+    if request.method == "GET":
+        return render(request, "myvote/login.html")
+    elif request.method == "POST":
+        # 检测用户名密码是否对应
+        # 登录成功需要存储cookie
+        response = redirect(reverse("myvote:index"))
+        # 存储cookie值
+        response.set_cookie("username",request.POST.get("username"))
+        return response
+
+def logout(request):
+    # 删除cookie值
+    res = redirect(reverse("myvote:login"))
+    res.delete_cookie("username")
+    return res
 
 
+@checklogin
 def index(request):
-
-    print(dir(request))
-    # return HttpResponse("首页")
+    # 未使用装饰器的判断
+    # username = request.COOKIES.get("username")
+    # if username:
+    #     questions = Questions.objects.all()
+    #     return render(request, "myvote/index.html",locals())
+    # else:
+    #     return redirect(reverse("myvote:login"))
+    username = request.COOKIES.get("username")
     questions = Questions.objects.all()
-    return render(request,"myvote/index.html",{"questions":questions})
+    return render(request, "myvote/index.html",locals())
 
+
+@checklogin
 def choicelist(request,id):
     try:
         question = Questions.objects.get(pk=id)
@@ -45,7 +77,9 @@ def choicelist(request,id):
         # 重定向
         return redirect(reverse("myvote:choiceresult", args=(id,)))
 
+@checklogin
 def choiceresult(request, id):
     # return HttpResponse("选项页")
     question = Questions.objects.get(pk=id)
-    return render(request, "myvote/choiceresult.html", {"question": question})
+    get_object_or_404(Question, pk=id)
+    return render(request, "myvote/choiceresult.html", locals())

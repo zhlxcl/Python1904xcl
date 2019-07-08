@@ -20,6 +20,12 @@
         <br><br>
         <div id="con">
             <br><br>
+            {% if username %}
+                当前用户为：{{ username }}    <a href="{% url 'myvote:logout' %}">退出</a>
+            {% else %}
+                没有登录
+            {% endif %}
+
             <h3><p class="text-center">请选择问题投票进行投票：</p></h3>
             <br>
             <ul>
