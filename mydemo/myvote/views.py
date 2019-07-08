@@ -12,12 +12,18 @@ from django.template import loader
 from .models import Questions,Choice
 
 
-def index(request):
-    return render(request, "myvote/index.html")
+def login(request):
+    if request.method == "POST":
+        # HttpResponse.set_cookie("username",username)
+        return redirect(reverse("myvote:index"))
 
-def questionlist(request):
+
+def index(request):
+
+    print(dir(request))
+    # return HttpResponse("首页")
     questions = Questions.objects.all()
-    return render(request, "myvote/questionlist.html", {"questions": questions})
+    return render(request,"myvote/index.html",{"questions":questions})
 
 def choicelist(request,id):
     try:
@@ -39,6 +45,7 @@ def choicelist(request,id):
         # 重定向
         return redirect(reverse("myvote:choiceresult", args=(id,)))
 
-def choiceresult(request,id):
+def choiceresult(request, id):
+    # return HttpResponse("选项页")
     question = Questions.objects.get(pk=id)
     return render(request, "myvote/choiceresult.html", {"question": question})
