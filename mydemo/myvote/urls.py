@@ -12,5 +12,5 @@ urlpatterns = [
     url(r'^choiceresult/(\d+)/$',views.choiceresult,name="choiceresult"),
     url(r'^login/$',views.login,name="login"),
     url(r'^logout/$',views.logout,name="logout"),
-
+    url(r'^regist/$',views.regist,name="regist"),
 ]
