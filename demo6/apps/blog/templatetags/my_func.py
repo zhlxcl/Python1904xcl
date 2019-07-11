@@ -3,8 +3,17 @@
 from django.template import library
 register = library.Library()
 
-from blog.models import Article
+from blog.models import Article,Category,Tag
 
 @register.simple_tag
 def getlatestarticles(num=3):
     return Article.objects.order_by("-create_time")[:num]
+
+
+@register.simple_tag
+def getcategoryarticles(num=3):
+    return Category.objects.all()
+
+@register.simple_tag
+def getalltags(num=3):
+    return Tag.objects.all()
