@@ -29,5 +29,6 @@ urlpatterns = [
 
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT }),
     url('ueditor/',include("DjangoUeditor.urls")),
-
+    # 配置评论应用的应用路由
+    url('',include('comment.urls', namespace='comment')),
 ]

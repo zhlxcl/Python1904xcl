@@ -17,3 +17,7 @@ def getcategoryarticles(num=3):
 @register.simple_tag
 def getalltags(num=3):
     return Tag.objects.all()
+
+@register.simple_tag
+def gettimes(num=3):
+    return Article.objects.dates("create_time","month","DESC")

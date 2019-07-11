@@ -29,7 +29,7 @@
 		<div class="row">
             <div class="col-md-4 col-sm-5 col-xs-8">
                     <div class="logo">
-                            <h1><a href="index.html"><b>博客实战</b></a></h1>
+                            <h1><a href="{% url 'blog:index' %}"><b>博客实战</b></a></h1>
                     </div>
             </div><!-- col-md-4 -->
             <div class="col-md-8 col-sm-7 col-xs-4">
@@ -77,7 +77,7 @@
 
                         {% for a in latestarticles %}
                             <li>
-                                <a href="#">{{ a.title }}</a>
+                                <a href="{% url 'blog:single' a.id %}">{{ a.title }}</a>
                             </li>
                         {% endfor %}
 
@@ -86,15 +86,13 @@
                 <div class="widget widget-archives">
                     <h3 class="widget-title">归档</h3>
                     <ul>
+                        {% gettimes as times %}
+
+                        {% for o in times %}
                         <li>
-                            <a href="#">2017 年 5 月</a>
+                            <a href="{% url 'blog:archives' o.year o.month %}">{{ o.year }} 年 {{ o.month }} 月</a>
                         </li>
-                        <li>
-                            <a href="#">2017 年 4 月</a>
-                        </li>
-                        <li>
-                            <a href="#">2017 年 3 月</a>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
 
@@ -105,7 +103,7 @@
 
                         {% for c in categoryarticles %}
                         <li>
-                            <a href="#">{{ c.title }}<span class="post-count">({{ c.article_set.count }})</span></a>
+                            <a href="{% url 'blog:categorys' c.id %}">{{ c.title }}<span class="post-count">({{ c.article_set.count }})</span></a>
                         </li>
                         {% endfor %}
 
@@ -120,14 +118,14 @@
 
                         {% for t in alltags %}
                             <li>
-                                <a href="#">{{ t.title }}</a>
+                                <a href="{% url 'blog:tags' t.id %}">{{ t.title }}</a>
                             </li>
                         {% endfor %}
 
                     </ul>
                 </div>
                 <div class="rss">
-                    <a href=""><span class="ion-social-rss-outline"></span> RSS 订阅</a>
+                    <a href="{% url 'blog:rss' %}"><span class="ion-social-rss-outline"></span> RSS 订阅</a>
                 </div>
             </aside>
         </div>
