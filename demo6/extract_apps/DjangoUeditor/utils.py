@@ -17,7 +17,7 @@ class FileSize():
 
     @staticmethod
     def Format(size):
-        import re
+        import te
         if isinstance(size, six.integer_types):
             return size
         else:
@@ -25,8 +25,8 @@ class FileSize():
                 return 0
             else:
                 oSize = size.lstrip().upper().replace(" ", "")
-                pattern = re.compile(
-                    r"(\d*\.?(?=\d)\d*)(byte|kb|mb|gb|tb)", re.I)
+                pattern = te.compile(
+                    r"(\d*\.?(?=\d)\d*)(byte|kb|mb|gb|tb)", te.I)
                 match = pattern.match(oSize)
                 if match:
                     m_size, m_unit = match.groups()

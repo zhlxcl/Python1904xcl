@@ -6,6 +6,9 @@ from .models import *
 
 from .forms import ArticleForm,CommentForm
 
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+
 # 实现分页器
 from django.core.paginator import Paginator,Page
 
@@ -17,6 +20,28 @@ def getpage(request,object_list,per_num):
     pagenum = 1 if not pagenum else pagenum
     page = Paginator(object_list, per_num).get_page(pagenum)
     return page
+
+
+# *****************缓存功能*********************
+# @cache_page(timeout=60)
+def index(request):
+
+    # 测试缓存单个数据
+    value = cache.get("py1904")
+    print(value)
+    cache.set("py1904", "hi")
+    value = cache.get("py1904")
+    print(value)
+    cache.clear("py1904")
+    value = cache.clear("py1904")
+    print(value)
+
+
+    ads = Ads.objects.all()
+    articles = Article.objects.all()
+    page = getpage(request, articles, 2)
+
+    return render(request, "blog/index.html", {"page": page, "ads": ads})
 
 
 
