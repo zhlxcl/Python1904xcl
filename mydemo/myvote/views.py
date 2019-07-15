@@ -3,7 +3,7 @@ from django.shortcuts import render,reverse,redirect,get_object_or_404
 # Create your views here.
 
 # 导入响应模块
-from django.http import HttpResponse,HttpResponseRedirect,Http404
+from django.http import HttpResponse,HttpResponseRedirect,Http404,JsonResponse
 
 # 导入获取模板的模块
 from django.template import loader
@@ -16,6 +16,19 @@ from django.contrib.auth import login as lgi ,logout as lgo ,authenticate
 
 # 导入表单类
 from .forms import *
+
+# 验证码的生成
+from PIL import Image,ImageDraw,ImageFont
+import random,io
+from django.core.cache import cache
+
+#邮箱验证
+from django.core.mail import send_mail,EmailMultiAlternatives
+from django.conf import settings
+# from itsdangerous import TimedJSONWebSignatureSerializer
+# from django.conf import settings
+
+
 
 # 装饰器
 # 1.使用cookie的装饰器
@@ -168,8 +181,23 @@ def login(request):
     lgf = LoginForm()
     rgf = RegistForm()
     if request.method == "GET":
+
+        # 发送邮件验证
+        recvlist = ["18614986528@163.com","2870175885@qq.com"]
+
+        try:
+            send_mail("邮箱发送验证","这是一封邮件",settings.EMAIL_HOST_USER,recvlist)
+            print("send success")
+        except Exception as e:
+            print(e)
+
         return render(request,'myvote/login.html',{"lgf":lgf,"rgf":rgf})
     elif request.method == "POST":
+        # 验证码的判断
+        verifycode = request.POST.get("verify")
+        if not verifycode == cache.get("verify"):
+            return HttpResponse("验证码错误")
+
         lgf = LoginForm(request.POST)
         if lgf.is_valid():
             username = lgf.cleaned_data["username"]
@@ -206,6 +234,62 @@ def regist(request):
         return HttpResponse("错误")
 
 
+# **************用户输入框验证****************
+def checkuser(request):
+    if request.method == "GET":
+        name = request.GET.get("name")
+        qs = VoteUser.objects.filter(username=name)
+        print(qs)
+        user = qs.first()
+        print(user)
+        if user:
+            return JsonResponse({"state":1})
+        else:
+            return JsonResponse({"state":0,'errorinfo':"用户名不存在"})
+
+
+
+
 
 
 # *******************************************************
+
+# 用来生成验证码
+def verify(request):
+    # 定义变量，用于画面的背景色、宽、高
+    bgcolor = (random.randrange(20, 100),
+               random.randrange(20, 100),
+               random.randrange(20, 100))
+    width = 100
+    heigth = 25
+    # 创建画面对象
+    im = Image.new('RGB', (width, heigth), bgcolor)
+    # 创建画笔对象
+    draw = ImageDraw.Draw(im)
+    # 调用画笔的point()函数绘制噪点
+    for i in range(0, 100):
+        xy = (random.randrange(0, width), random.randrange(0, heigth))
+        fill = (random.randrange(0, 255), 255, random.randrange(0, 255))
+        draw.point(xy, fill=fill)
+    # 定义验证码的备选值
+    str1 = 'ABCD123EFGHIJK456LMNOPQRS789TUVWXYZ0'
+    # 随机选取4个值作为验证码
+    rand_str = ''
+    for i in range(0, 4):
+        rand_str += str1[random.randrange(0, len(str1))]
+    cache.set("verify", rand_str)
+    # 构造字体对象
+    font = ImageFont.truetype('CALISTBI.TTF', 23)
+    fontcolor = (255, random.randrange(0, 255), random.randrange(0, 255))
+    # 绘制4个字
+    draw.text((5, 2), rand_str[0], font=font, fill=fontcolor)
+    draw.text((25, 2), rand_str[1], font=font, fill=fontcolor)
+    draw.text((50, 2), rand_str[2], font=font, fill=fontcolor)
+    draw.text((75, 2), rand_str[3], font=font, fill=fontcolor)
+    # 释放画笔
+    del draw
+    # request.session['verifycode'] = rand_str
+    f = io.BytesIO()
+    im.save(f, 'png')
+    # 将内存中的图片数据返回给客户端，MIME类型为图片png
+    return HttpResponse(f.getvalue(), 'image/png')

@@ -1,0 +1,5 @@
+django-redis-cache==2.0.0
+redis==3.2.1
+tornado==6.0.3
+virtualenv==16.6.1
+virtualenvwrapper-win==1.2.5

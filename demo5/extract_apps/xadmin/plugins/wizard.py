@@ -1,4 +1,4 @@
-import re
+import te
 from collections import OrderedDict
 from django import forms
 from django.db import models
@@ -24,7 +24,7 @@ from xadmin.views import BaseAdminPlugin, ModelFormAdminView
 
 
 def normalize_name(name):
-    new = re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\1', name)
+    new = te.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\1', name)
     return new.lower().strip('_')
 
 
