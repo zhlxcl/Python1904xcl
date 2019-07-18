@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
+sys.path.insert(0,"apps")
 sys.path.insert(0,"extract_apps")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -130,3 +131,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR,"static")]
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
+MEDIAFILES_DIRS = [os.path.join(BASE_DIR,'media')]

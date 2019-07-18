@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>商品详情--礼品商城</title>
+	<!--引用外部样式-->
+	<link type="text/css" rel="stylesheet"  href="/static/css/basic.css">
+	<link type="text/css" rel="stylesheet"  href="/static/css/web.css">
+</head>
+<body>
+
+<!--网站顶部开始-->
+<div id="TopMain">
+	<!--Top开始-->
+	<div id="Top">
+		<div class="banner"><a href="{% url 'gift:index' %}"><img src="/static/images/logo.png" /></a></div>
+		<!--search begin-->
+		<div class="search">
+			<form>
+				<input type="text"  class="txt"/>
+				<input type="submit" class="but"  value=""/>
+			</form>
+		</div>
+		<!--search end-->
+		<div class="user">
+			{% if user.member.status == 1 %}
+				<!--用户登录后状态-->
+				<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="#" class="usertxt">用户中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
+			{% else %}
+				<!--用户登录前状态-->
+				<span id="nouser"><font><span class="iconfont">&#xe60b;</span><a href="{% url 'gift:login' %}">登录</a></font>
+				<font><span class="iconfont">&#xe60e;</span><a href="{% url 'gift:regist' %}">注册</a></font></span>
+			{% endif %}
+			</div>
+	</div>
+	<!--Top结束-->
+</div>
+<!--网站顶部结束-->
+
+
+<!--导航开始-->
+<div id="Logo" >
+	<ul>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">首页</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">生日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">鲜花</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">蛋糕</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">节日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">个性定制</a></li>
+		<li class="last"></li>
+	</ul>
+</div>
+<!--导航结束-->
+
+<!--内容页主体开始-->
+<div id="webCon">
+
+	<!--产品放大镜效果开始-->
+	<div class="web_ProductImg">
+		<div id="box">
+			<!--小图展示 start-->
+			<div class="simg">
+				<img src="/media/{{ good.maximg }}" width="450" height="450" />
+				<span class="move"></span>
+				<span class="shade"></span>
+			</div>
+			<!--小图展示 end-->
+			<!--按扭 start-->
+			<div class="but">
+				<img src="/media/{{ good.maximg }}" width="60" class="active"  dataSrc="/media/{{ good.maximg }}"/>
+			</div>
+			<!--按扭 end-->
+			<!--大图 start-->
+			<div class="bimg"> <img src="/media/{{ good.maximg }}" /></div>
+			<!--大图 end-->
+		</div>
+	</div>
+	<!--产品放大镜效果结束-->
+	<div class="web_ProductXq">
+		<form method="post" action="">
+			<ul>
+				<li class="title" id="good">{{ good.goodname }}--<span style="font-size: 18px">{{ good.category }}</span></li><br>
+				<li class="bor">库存：<span style="font-size: 18px">{{ good.stock }}个</span></li><br>
+				<li class="bor">销量：<span style="color: red;font-size: 22px">{{ good.sale }}个</span></li><br>
+				<li  class="bor">价格：<span style="color: red;font-size: 22px">￥{{ good.price }}元</span></li><br>
+				<li  class="bor">标签：
+					{% for o in good.tags.all %}
+						<span style="color: orangered;font-size: 20px">{{ o.title }}//</span>
+					{% endfor %}
+				</li><br>
+				<li  class="bor">商品颜色：
+					{% for c in good.color.all %}
+					<span style="font-size: 19px">{{ c.title }}</span>
+					{% endfor %}
+				</li><br>
+				{% if good.category.title == '鲜花' %}
+					<li  class="bor">花语：<span style="font-size: 23px;font-family: 楷体;color: red">{{ good.detail }}</span></li><br>
+				{% else %}
+				<li  class="bor">商品详情：<span style="font-size: 20px;color: black">{{ good.detail}}</span></li><br>
+				{% endif %}
+
+				<li class="bor">
+					<span>购买数量 :<input type="text" id="goodnum" class="txt" value="1" style="height: 30px;width: 60px;border: 1px solid #3b4249"/></span>
+				</li><br>
+
+				<li class="but">
+					<a id="submit"><img src="/static/images/Webcar.png" /></a>
+					<a href=""><img src="/static/images/Websc.png" /></a>
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>
+<!--内容主体结束-->
+
+<!--推荐产品开始-->
+<div id="IntroProduct">
+	<p class="ti">推荐产品</p>
+	<ul id="ProductGoods">
+
+	</ul>
+</div>
+<!--推荐产品结束-->
+
+<!--产品详情开始-->
+<div id="ProductInfo">
+	<ul class="sel">
+		<li class="active">商品描述<span></span></li>
+		<li>商品属性 <span></span></li>
+		<li>用户评论<span></span></li>
+		<li>商品购买记录<span></span></li>
+	</ul>
+
+	<div id="ProductSelect">
+		<div class="selCon" style="display:block;">商品描述:<br><br>
+			{% for o in good.tags.all %}
+				<span style="color: red;font-size: 20px">{{ o.title }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			{% endfor %}
+			<br><br>
+			<p style="color: orangered;font-size: 20px">{{ good.detail }}</p>
+		</div>
+		<div class="selCon">商品属性:<br><br>
+			<span style="color: red;font-size: 20px">{{ good.category }}</span>
+		</div>
+		<div class="selCon">用户评论:</div>
+		<div class="selCon">商品购买记录</div>
+	</div>
+	
+
+</div>
+<!--产品详情结束-->
+
+<!--网站底部开始-->
+<img src="/static/images/f.jpg"  class="fbg"/>
+<div id="Footer2">
+	<dl class="first">
+		<dt><a href="#">关于我们</a></dt>
+		<dd><a href="#">诚聘英才</a></dd>
+		<dd><a href="#">品牌入驻</a></dd>
+		<dd><a href="#">友情链接</a></dd>
+	</dl>
+	<dl>
+		<dt><a href="#">关于我们</a></dt>
+		<dd><a href="#">诚聘英才</a></dd>
+		<dd><a href="#">品牌入驻</a></dd>
+		<dd><a href="#">友情链接</a></dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl class="last">
+		<dt>客服在线</dt>
+		<dd>4006-600-000</dd>
+		<dd><img src="/static/images/QQ.jpg" /></dd>
+	</dl>
+
+	<div style="clear:both"></div>
+</div>
+<p class="Copy">版权所有：礼品网 备案号：备13016338号</p>
+<!--网站底部结束-->
+
+
+<script type="text/javascript" src="/static/js/jquery.js"></script>
+
+<script type="text/javascript">
+	$(".but img").mouseover(function(){
+		//鼠标滑动到对图片按扭，图片加上红色边框，其它去掉边框
+		$(this).addClass("active").siblings("img").removeClass("active"); 
+
+		
+		var bimg=$(this).attr("dataSrc");//获取小图片按扭对应的大图片地址
+		$(".simg img,.bimg img").attr("src",bimg); //给小图片和大图展示赋值 
+		
+
+	});
+
+
+
+	//鼠标滑动到遮罩层上.shade 时 ，的操作
+	$("#box .simg .shade").hover(function(){
+		$(".simg span.move,.bimg").show(); //小滑块和大图展示显示
+	},function(){
+		$(".simg span.move,.bimg").hide();//小滑块和大图展示隐藏
+	});
+
+	//当鼠标在遮罩层上.shade 移动时，动态来获取 小滑块的位置
+	$("#box .simg .shade").mousemove(function(e){
+		
+		var x=e.clientX;  //鼠标与浏览器窗口左边距离
+		var y=e.clientY+$(window).scrollTop(); //鼠标与浏览器窗口上面距离
+
+
+		var l=$(this).offset().left;  //获取.shade与浏览器窗口左边距离
+		var t=$(this).offset().top;  //获取 .shade 与浏览器窗口上边距离
+		
+
+		var w=$(".simg span.move").width()/2;  //获取小滑块宽度的一半
+		var h=$(".simg span.move").height()/2; //获取小滑块高度的一半
+
+
+		var _left=x-l-w;  //小滑块与 .shade 左边的距离
+		var _top=y-t-h;  //小滑块与 .shade 上面的距离
+
+
+		var bigW=$("#box .simg .shade").width()-w*2-2;  //滑块能滑动的最大宽度
+		var bigH=$("#box .simg .shade").height()-h*2-2; //滑块能滑动的最大高度
+		//document.title=_left+"="+_top;
+		//通过_top判断，小滑块在竖直方向不能移出去 
+		if(_top<0){
+			_top=0; 
+		}else if(_top>bigH){
+			_top=bigH;
+		}
+
+		//通_left值判断 ，小滑块在水平方向不能移出去
+		if(_left<0){
+			_left=0;
+		}else if(_left>bigW){
+			_left=bigW;
+		}
+
+		//给小滑块赋值 top  left
+		$(".simg span.move").css({"left":_left,"top":_top});
+
+
+		//获以滑块滑动的宽度和高度的比例
+		var wbl=_left/bigW;  //滑动宽度和最大滑动的宽度比例
+		var hbl=_top/bigH;  //滑动高度和最大滑动的高度比例
+
+		//document.title=wbl;
+
+		var bigLeft=($(".bimg img").width()-$(".bimg").width())*wbl;  //大图向左移动距离
+		var bigTop=($(".bimg img").height()-$(".bimg").height())*hbl;  //大图向上移动距离
+
+		$(".bimg img").css({"left":-bigLeft,"top":-bigTop}); //动态给大图赋值
+
+		
+	});
+
+</script>
+
+<script type="text/javascript">
+//选项卡效果
+$("#ProductInfo ul.sel li").mouseover(function(){
+	var _index=$(this).index();
+	$(this).addClass("active").siblings("li").removeClass("active");
+	$("#ProductSelect .selCon").eq(_index).show().siblings("div").hide();
+
+});
+</script>
+
+
+<!--同类商品推荐-->
+<script>
+	$.ajax({
+		url:"{% url 'gift:recommend' good.id %}",
+		type:"post",
+		data:{
+			"csrfmiddlewaretoken":"{{ csrf_token }}",
+			},
+		success:function(data){
+			// console.log(data)
+			// console.log(data.length)
+			for(i=0;i<data.length;i++){
+				// console.log(data[i])
+				// console.log(data[i].goodname)
+				goodname = data[i].goodname
+				price = data[i].price
+				sale = data[i].sale
+				maximg = data[i].maximg
+				id = data[i].id
+
+				$("#ProductGoods").append('<li><a href="/detail/'+id+'"><img src="/media/'+maximg+'" width="220px" height="220" /></a><p><a href="#">'+goodname+'</a></p><p class="money"><font>￥'+price+'</font><span>'+sale+'人购买</span></p></li>')
+
+			}
+		}
+	});
+
+
+
+</script>
+
+
+
+<!--
+	1、在News大盒子里面，构建两个一样大小的长方形，一个用来设背景透明，一个利用绝定位，盖在透明
+	图层上面，用来放内容
+	2、利用 h3标签来制作标题部分（颜色，大小，字体类型，竖直居中，首行缩进text-indent:20px;）
+	3、利用 ul来制作新闻列表，文字竖直间距利用行高 line-height:30px;  给 ul添加对应的内边距，使文字与上右下左产生一定的间距。
+	4、给文字加上了 a标签超链接，如何优化我们代码，代码的性能,如果把常用样式，统一初始化，我们选择的是用标签来表达，而不是用 *
+-->
+
+
+
+
+ </body>
+</html>

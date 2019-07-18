@@ -167,12 +167,3 @@ $(".flash").hover(function(){
 	//隐藏
 	$("a.prev,a.next").hide();
 });
-
-
-
-//用户购买时的登录和注册页面
-$("#LoginAndRegister p span").mouseover(function(){
-	var _index=$(this).index();
-	$(this).addClass("active").siblings().removeClass("active");
-	$("#LoginAndRegister .Con div").eq(_index).show().siblings().hide();
-});

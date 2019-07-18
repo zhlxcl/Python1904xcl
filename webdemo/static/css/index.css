@@ -1,0 +1,56 @@
+/*椤甸潰鏍峰紡*/
+#Top .search input.txt {
+    height: 38px;
+    text-indent: 10px;
+}
+#Top .search input.but:hover {
+    border: 1px solid #aaa;
+}
+#TopEvent .TopEventL {
+    border: 1px solid #bbb;
+}
+#TopEvent .TopEventL ul li {
+    width: 198px;
+    text-align: center;
+}
+#TopEvent .TopEventL ul li a:hover {
+    border: 2px solid #fff;
+}
+#layuiTab1 .layui-tab-title li {
+    font-size: 16px;
+    line-height: 20px;
+}
+.TopEventR .layui-tab {
+    margin: 0;
+}
+#layuiTab2 .layui-tab-title li {
+    width: 80px;
+}
+.commCss .PartM ul li {
+    cursor: pointer;
+}
+.commCss .PartM ul li:hover {
+    background-color: #efefef;
+    color:#ff4a01;
+}
+
+#Flower .layui-tab {
+    /*float: right;*/
+}
+#Flower .layui-tab-content {
+    /*float: right;*/
+}
+#Flower ul.FlowerNav li:hover {
+    cursor: pointer;
+}
+#Flower ul.FlowerNav li:last-child:hover {
+    cursor: auto;
+}
+
+
+
+/*layui鏍峰紡*/
+.layui-tab-content {
+    padding: 0;
+}
+

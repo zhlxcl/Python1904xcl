@@ -9,12 +9,6 @@ a{text-decoration:none;}
     url('../iconfont/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
     url('../iconfont/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
 }
-/*广告样式*/
-#topAdv{width:100%; height:100px; background:url("../images/advbg.png"); text-align:center;
-		position:relative;/*相对定位*/}
-#topAdv a{ display:block; /*变成块级元素*/}
-#topAdv img.close{position:absolute;/*绝对定位*/ top:0px; right:0px; cursor:pointer;/*手指*/}
-
 /*Top样式*/
 #Top{width:1000px; height:70px;  margin:0px auto;/*水平距中*/ padding-top:30px;}
 #Top .banner{width:215px; height:70px; float:left;/*左浮动*/}
@@ -143,7 +137,6 @@ background:#0a0202;filter:alpha(opacity=70);-moz-opacity:0.7;-khtml-opacity: 0.7
 #HotIntro .HotIntroCon .newIntro ul li{font-size:12px; color:#666; line-height:30px;}
 #HotIntro .HotIntroCon .newIntro ul li a{color:#666;}
 #HotIntro .HotIntroCon .newIntro ul li a:hover{color:#f53e6d;}
-
 
 
 
