@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>订单支付成功---礼品网</title>
+	<!--引用外部样式-->
+	<link type="text/css" rel="stylesheet"  href="/static/css/basic.css">
+	<link type="text/css" rel="stylesheet"  href="/static/css/web.css">
+
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/index.js"></script>
+</head>
+<body>
+
+<!--网站顶部开始-->
+<div id="TopMain">
+	<!--Top开始-->
+	<div id="Top">
+		<div class="banner"><a href="{% url 'gift:index' %}"><img src="/static/images/logo.png" /></a></div>
+		<!--search begin-->
+		<div class="search">
+			<form>
+				<input type="text"  class="txt"/>
+				<input type="submit" class="but"  value=""/>
+			</form>
+		</div>
+		<!--search end-->
+		<div class="user">
+			{% if user.member.status == 1 %}
+				<!--用户登录后状态-->
+			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="#" class="usertxt">用户中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
+			{% else %}
+				<!--用户登录前状态-->
+				<span id="nouser"><font><span class="iconfont">&#xe60b;</span><a href="{% url 'gift:login' %}">登录</a></font>
+				<font><span class="iconfont">&#xe60e;</span><a href="{% url 'gift:regist' %}">注册</a></font></span>
+			{% endif %}
+			</div>
+	</div>
+	<!--Top结束-->
+</div>
+<!--网站顶部结束-->
+
+<!--导航开始-->
+<div id="Logo" >
+	<ul>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">首页</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">生日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">鲜花</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">蛋糕</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">节日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">个性定制</a></li>
+		<li class="last"></li>
+	</ul>
+</div>
+<!--导航结束-->
+
+
+
+
+
+<!--订单支付路径开始-->
+<div id="dd_address">
+	<ul>
+		<li>
+			<span class="but but_active">1</span>
+			<span class="txt txt_active">提交订单</span>
+			<span class="line line_active2"></span>
+		</li>
+		<li>
+			<span class="but but_active">2</span>
+			<span class="txt txt2 txt_active">确认订单并支付</span>
+			<span class="line line2 line_active2"></span>
+		</li>
+		<li class="last">
+			<span class="but but_active">3</span>
+			<span class="txt txt_active">已完成</span>
+		</li>
+	</ul>
+</div>
+<!--订单支付路径结束-->
+
+<!--订单产品布局开始-->
+<div id="dd_List"></div>
+<!--订单产品布局结束-->
+
+
+
+
+
+
+
+
+
+<!--网站底部开始-->
+<img src="/static/images/f.jpg"  class="fbg"/>
+<div id="Footer2">
+	<dl class="first">
+		<dt><a href="#">关于我们</a></dt>
+		<dd><a href="#">诚聘英才</a></dd>
+		<dd><a href="#">品牌入驻</a></dd>
+		<dd><a href="#">友情链接</a></dd>
+	</dl>
+	<dl>
+		<dt><a href="#">关于我们</a></dt>
+		<dd><a href="#">诚聘英才</a></dd>
+		<dd><a href="#">品牌入驻</a></dd>
+		<dd><a href="#">友情链接</a></dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl class="last">
+		<dt>客服在线</dt>
+		<dd>4006-600-000</dd>
+		<dd><img src="images/QQ.jpg" /></dd>
+	</dl>
+
+	<div style="clear:both"></div>
+</div>
+
+
+<p class="Copy">版权所有：礼品网 备案号：备13016338号</p>
+<!--网站底部结束-->
+
+
+
+
+
+
+
+
+
+<!--
+	1、在News大盒子里面，构建两个一样大小的长方形，一个用来设背景透明，一个利用绝定位，盖在透明
+	图层上面，用来放内容
+	2、利用 h3标签来制作标题部分（颜色，大小，字体类型，竖直居中，首行缩进text-indent:20px;）
+	3、利用 ul来制作新闻列表，文字竖直间距利用行高 line-height:30px;  给 ul添加对应的内边距，使文字与上右下左产生一定的间距。
+	4、给文字加上了 a标签超链接，如何优化我们代码，代码的性能,如果把常用样式，统一初始化，我们选择的是用标签来表达，而不是用 *
+-->
+
+
+
+
+ </body>
+</html>

@@ -133,18 +133,157 @@ class RegistView(View):
         else:
             return render(request, 'gift/login.html', {"errors": "两次密码输入不一致，注册失败"})
 
+# 收货人信息
+class ConsigneeView(View):
+    def get(self,request):
+        return render(request,"gift/consignee.html")
+
+# 订单支付成功
+class OrderSuccessView(View):
+    def get(self,request):
+        return render(request,"gift/ordersuccess.html")
+
+# 创建订单
+def createmyorder(request):
+    mycart = Cart.objects.filter(user=request.user)
+    sum = 0
+    # print(len(mycart))
+    if len(mycart) == 0:
+        sum = str("空空如也，无法结算")
+        return JsonResponse({"sum":sum })
+    else:
+        for i in mycart:
+            price = i.good.price
+            num = i.num
+            sum += price * num
+
+        order = Order()
+        order.sum = sum
+        order.user = request.user
+        order.save()
+        for i in mycart:
+            ordergoods = OrderGoods()
+            ordergoods.order = order
+            ordergoods.good = i.good
+            ordergoods.save()
+            i.delete()
+        return JsonResponse({"sum": sum})
+
+
+def product(request):
+    return render(request, "gift/product.html")
+
+
+
+# 判断用户是否登录的装饰器
+def checklogin(fun):
+    def check(request,*args):
+        if request.user and request.user.is_authenticated:
+            return fun(request,*args)
+        else:
+            return redirect(reverse("gift:login"))
+    return check
 
 # 加入购物车
-def addcart(request,id):
+@checklogin
+def addcart(request):
+    goodnum = int(request.POST.get("goodnum"))
+    goodid = request.POST.get("goodid")
+    good = Good.objects.get(pk=goodid)
+    usercart = Cart.objects.filter(user=request.user,good=good).first()
+    if usercart:
+        usercart.num += goodnum
+        usercart.save()
+    else:
+        cart = Cart()
+        cart.user = request.user
+        cart.good = good
+        cart.num = goodnum
+        cart.save()
+    return redirect(reverse("gift:cart"))
 
-    num = request.POST.get("goodnum")
-    mycart = Cart()
-    return JsonResponse({"n":n})
+# 删除购物车中的商品
+def delcart(request,id):
+    cart = Cart.objects.get(pk=id)
+    cart.delete()
+    return redirect(reverse("gift:cart"))
 
-# 购物车
+# 清空购物车
+def clearcart(request):
+    mycart = Cart.objects.filter(user=request.user)
+    for i in mycart:
+        i.delete()
+    return JsonResponse({"sum": "更新成功"})
+# 购物车信息详情
 class CartView(View):
     def get(self,request):
-        return render(request,"gift/cart.html")
+        mycart = Cart.objects.filter(user=request.user)
+        # print(mycart)
+        return render(request,"gift/cart.html",locals())
+
+# 修改购物车中的商品的数量
+def changenum(request,id):
+    cnum = int(request.POST.get("num"))
+    cart = Cart.objects.get(pk=id)
+    stock = cart.good.stock
+    price = cart.good.price
+    if cnum > stock:
+        cart.num = stock
+        cart.save()
+        sumprice = price * stock
+        return JsonResponse({"num": stock,"sumprice": sumprice})
+    else:
+        cart.num = cnum
+        cart.save()
+        sumprice = price * cnum
+        return JsonResponse({"num": cnum, "sumprice": sumprice})
+
+# 得到不同种类的商品
+def diffcategory(request,id):
+    category = Category.objects.get(pk=id)
+    goods = category.good_set.all()[:6]
+    goodlist = []
+    for i in goods:
+        good = {
+            'id': i.id,
+            'goodname': i.goodname,
+            'price': i.price,
+            'maximg': str(i.maximg),
+            'sale':i.sale,
+        }
+        goodlist.append(good)
+    return JsonResponse(goodlist, safe=False)
+# 六种商品
+def allgoods(request):
+    goods = Good.objects.all()[:6]
+    goodlist = []
+    for i in goods:
+        good = {
+            'id': i.id,
+            'goodname': i.goodname,
+            'price': i.price,
+            'maximg': str(i.maximg),
+            'sale':i.sale,
+        }
+        goodlist.append(good)
+    return JsonResponse(goodlist, safe=False)
+
+# 所有商品
+def all(request):
+    goods = Good.objects.all()
+    goodlist = []
+    for i in goods:
+        good = {
+            'id': i.id,
+            'goodname': i.goodname,
+            'price': i.price,
+            'maximg': str(i.maximg),
+            'sale':i.sale,
+        }
+        goodlist.append(good)
+    return JsonResponse(goodlist, safe=False)
+
+
 
 # 商品详情
 class DetailView(View):
@@ -173,6 +312,16 @@ def recommend(request,id):
             }
             goodlist.append(g)
     return JsonResponse(goodlist,safe=False)
+
+# 所有订单信息
+def myorder(request):
+    orderlist = Order.objects.filter(user=request.user)
+    # print(orderlist)
+    # for i in orderlist:
+    #     print(i)
+    #     print(i.sum)
+    return render(request,"gift/myorder.html",locals())
+
 
 
 # 用户收货信息

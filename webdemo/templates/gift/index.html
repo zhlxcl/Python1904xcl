@@ -10,6 +10,11 @@
 	<link type="text/css" rel="stylesheet" href="/static/css/basic.css" >
 	<link type="text/css" rel="stylesheet" href="/static/css/layui.css" >
 	<link type="text/css" rel="stylesheet" href="/static/css/index.css" >
+
+	<!--引用外部jquery文件-->
+	<script type="text/javascript" src="/static/js/jquery.js" ></script>
+	<script type="text/javascript" src="/static/js/index.js" ></script>
+
 	<style>
 		 dl,li:hover {
 			 box-shadow: 1px 1px 5px #cc3333;
@@ -118,7 +123,7 @@
 		<div class="user">
 			{% if user.member.status == 1 %}
 				<!--用户登录后状态-->
-			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="#" class="usertxt">用户中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="{% url 'gift:myorder' %}" class="usertxt">订单中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
 				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
 			{% else %}
 				<!--用户登录前状态-->
@@ -144,6 +149,7 @@
 		<li><a href="#Cake">蛋糕</a></li>
 		<li><a href="#Holiday">节日礼物</a></li>
 		<li><a href="#Specific">个性定制</a></li>
+		<li><a href="{% url 'gift:product' %}">全部商品</a></li>
 		<li class="last"></li>
 	</ul>
 </div>
@@ -333,9 +339,9 @@
 <!--&lt;!&ndash;头部活动部分结束&ndash;&gt;-->
 
 
-<!--第一部分生日礼物开始-->
+<!--第一部分礼物开始-->
 <div id="Specific" class="commCss">
-	<p class="ti">生日礼物</p>
+	<p class="ti">礼物</p>
 	<div class="PartCon">
 		<!--PartL start-->
 		<div class="PartL">
@@ -346,9 +352,9 @@
 			<!--产品列表内容开始-->
 			<div class="imgList">
 				<ul>
-					{% getbirthgoods as birthgoods %}
+					{% getallgoods as allgoods %}
 
-					{% for good in birthgoods %}
+					{% for good in allgoods %}
 					<li>
 						<a href="{% url 'gift:detail' good.id %}"><img src="/media/{{ good.maximg }}" width="280" height="280"/></a>
 						<h3>{{ good.goodname }}</h3>
@@ -360,15 +366,74 @@
 		</div>
 		<!--PartL end-->
 
+		<div class="PartR" id="GoodlistSelect">
+			<div class="selCon">
+				<ul id="cg">
+
+
+				</ul>
+			</div>
+		<!--PartM end-->
+		</div>
+
 		<!--PartM start-->
 		<div class="PartM"  id="Goodlist" >
 			<ul class="list">
-				<li class="active">生日鲜花<img src="/static/images/ico.png"  /><span></span></li>
-				<li>钥匙扣<span></span></li>
-				<li>围巾、帽子<span></span></li>
-				<li>香水座<span></span></li>
-				<li>台灯<span></span></li>
+				{% getallcategory as allcategory %}
+
+				{% for cate in allcategory %}
+					{% if forloop.counter == 1 %}
+					<li class="active" id="cate{{ cate.id }}">{{ cate.title }}</li>
+					{% else %}
+					<li class="" id="cate{{ cate.id }}">{{ cate.title }}</li>
+					{% endif %}
+
+					<script>
+						$.ajax({
+								url:"{% url 'gift:allgoods' %}",
+								type:"post",
+								data:{
+									"csrfmiddlewaretoken":"{{ csrf_token }}",
+									},
+								success:function(data){
+									$("#cg").children().remove()
+									for(i=0;i<data.length;i++){
+										goodname = data[i].goodname
+										price = data[i].price
+										sale = data[i].sale
+										maximg = data[i].maximg
+										id = data[i].id
+										$("#cg").append('<li><a href="/detail/'+id+'"><img src="/media/'+maximg+'" width="200px" /></a><p>'+goodname+'<span>￥'+price+'</span>&nbsp;&nbsp;销量:'+sale+'</p></li>')
+									}
+								}
+							})
+
+						$("#"+"cate{{ cate.id }}").click(function(){
+							$("#"+"cate{{ forloop.counter }}").siblings("li").removeClass("active")
+							$("#"+"cate{{ forloop.counter }}").attr('class','active')
+							$.ajax({
+								url:"{% url 'gift:diffcategory' cate.id %}",
+								type:"post",
+								data:{
+									"csrfmiddlewaretoken":"{{ csrf_token }}",
+									},
+								success:function(data){
+									$("#cg").children().remove()
+									for(i=0;i<data.length;i++){
+										goodname = data[i].goodname
+										price = data[i].price
+										sale = data[i].sale
+										maximg = data[i].maximg
+										id = data[i].id
+										$("#cg").append('<li><a href="/detail/'+id+'"><img src="/media/'+maximg+'" width="200px" /></a><p>'+goodname+'<span>￥'+price+'</span>&nbsp;&nbsp;销量:'+sale+'</p></li>')
+									}
+								}
+							})
+						})
+					</script>
+				{% endfor %}
 			</ul>
+		<div>
 		{% getonegoods as onegoods %}
 		{% for o in onegoods %}
 			<a href="{% url 'gift:detail' o.id %}"><img src="/media/{{ o.maximg }}" width='175' height='150'/></a><br>
@@ -378,24 +443,15 @@
 		</div>
 		<!--PartM end-->
 
-		<!--PartR start-->
-		<div class="PartR" id="GoodlistSelect">
-			<div class="selCon">
-				<ul>
-				{% getflowergoods as flowergoods %}
 
-				{% for flower in flowergoods %}
-				<li>
-					<a href="{% url 'gift:detail' flower.id %}"><img src="/media/{{ flower.maximg }}" width='200' /></a>
-					<p>{{ flower.goodname }}<span>￥{{ flower.price }}</span>&nbsp;&nbsp;销量:{{ flower.sale }}</p>
-				</li>
-				{% endfor %}
-				</ul>
-			</div>
-		<!--PartM end-->
+
+
+<div style="clear:both"></div>
+		</div>
 	</div>
-<div style="clear:both"></div></div></div>
-<!--第一部分生日礼物结束-->
+</div>
+
+<!--第一部分礼物结束-->
 
 <!--第二部分鲜花开始-->
 <div id="Flower" class="part2">
@@ -845,9 +901,6 @@
 <p class="Copy">版权所有：礼品网 备案号：备13016338号</p>
 <!--网站底部结束-->
 
-<!--引用外部jquery文件-->
-	<script type="text/javascript" src="/static/js/jquery.js" ></script>
-	<script type="text/javascript" src="/static/js/index.js" ></script>
 
 <script type="text/javascript">
 	$("img.prev").click(function(){

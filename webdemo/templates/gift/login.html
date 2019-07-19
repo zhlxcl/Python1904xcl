@@ -34,6 +34,62 @@ body{background: #f2f2f2;}
 </head>
 
 <body>
+
+<!--网站顶部开始-->
+<div id="TopMain">
+	<!--Top开始-->
+	<div id="Top">
+		<div class="banner"><a href="{% url 'gift:index' %}"><img src="/static/images/logo.png" /></a></div>
+		<!--search begin-->
+		<div class="search">
+			<form>
+				<input type="text"  class="txt"/>
+				<input type="submit" class="but"  value=""/>
+			</form>
+		</div>
+		<!--search end-->
+		<div class="user">
+			{% if user.member.status == 1 %}
+				<!--用户登录后状态-->
+				<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="#" class="usertxt">用户中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
+			{% else %}
+				<!--用户登录前状态-->
+				<span id="nouser"><font><span class="iconfont">&#xe60b;</span><a href="{% url 'gift:login' %}">登录</a></font>
+				<font><span class="iconfont">&#xe60e;</span><a href="{% url 'gift:regist' %}">注册</a></font></span>
+			{% endif %}
+			</div>
+	</div>
+	<!--Top结束-->
+</div>
+<!--网站顶部结束-->
+
+
+<!--导航开始-->
+<div id="Logo" >
+	<ul>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">首页</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">生日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">鲜花</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">蛋糕</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">节日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">个性定制</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:product' %}">全部商品</a></li>
+		<li class="last"></li>
+	</ul>
+</div>
+<!--导航结束-->
+
+
 <!--登录注册页开始-->
 <div id="LgAndReg">
 	<p class="ti"><span class="active">用户登录</span><span>用户注册</span></p>

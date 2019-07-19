@@ -9,13 +9,10 @@ from gift.models import Good,Category
 def gethighsalegoods(num=4):
     return Good.objects.order_by("-sale")[:num]
 
-# 得到类型为 生日礼物 的商品
+# 得到类型为 礼物 的商品
 @register.simple_tag
-def getbirthgoods():
-    cate = Category.objects.filter(title="礼物").first()
-    goods = Good.objects.filter(category=cate.id)
-    # print(goods)
-    return goods
+def getallgoods(num=4):
+    return Good.objects.all()[:num]
 
 # 得到类型为 鲜花 的销量前六的商品
 @register.simple_tag
@@ -37,3 +34,8 @@ def getheighcakegoods(num=5):
 @register.simple_tag
 def getonegoods(num=1):
     return Good.objects.order_by("-sale")[:num]
+
+# 得到五个分类的类名
+@register.simple_tag
+def getallcategory(num=5):
+    return Category.objects.order_by("id")[:num]

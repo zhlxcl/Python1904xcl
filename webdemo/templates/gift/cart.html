@@ -1,13 +1,16 @@
 <!doctype html>
 <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <title>购物车--礼品商城</title>
+<head>
+  	<meta charset="UTF-8">
+  	<title>购物车--礼品商城</title>
  <!--引用外部样式-->
- <link type="text/css" rel="stylesheet"  href="/static/css/basic.css">
- <link type="text/css" rel="stylesheet"  href="/static/css/web.css">
- </head>
- <body>
+ 	<link type="text/css" rel="stylesheet"  href="/static/css/basic.css">
+ 	<link type="text/css" rel="stylesheet"  href="/static/css/web.css">
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/index.js"></script>
+
+</head>
+<body>
 <!--网站顶部开始-->
 <div id="TopMain">
 	<!--Top开始-->
@@ -24,7 +27,7 @@
 		<div class="user">
 			{% if user.member.status == 1 %}
 				<!--用户登录后状态-->
-			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="#" class="usertxt">用户中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="{% url 'gift:myorder' %}" class="usertxt">订单中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
 				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
 			{% else %}
 				<!--用户登录前状态-->
@@ -54,105 +57,86 @@
 		<li><a href="{% url 'gift:index' %}">节日礼物</a></li>
 		<li><a href=""></a></li>
 		<li><a href="{% url 'gift:index' %}">个性定制</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:product' %}">全部商品</a></li>
 		<li class="last"></li>
 	</ul>
 </div>
 <!--导航结束-->
-
-<!--订单支付路径开始-->
-<div id="dd_address">
-	<ul>
-		<li>
-			<span class="but but_active">1</span>
-			<span class="txt txt_active">提交订单</span>
-			<span class="line line_active"></span>
-		</li>
-		<li>
-			<span class="but">2</span>
-			<span class="txt txt2">确认订单并支付</span>
-			<span class="line line2"></span>
-		</li>
-		<li class="last">
-			<span class="but">3</span>
-			<span class="txt">已完成</span>
-		</li>
-	</ul>
-</div>
-<!--订单支付路径结束-->
 
 
 <!--订单产品布局开始-->
 <div id="dd_List">
 	<!--标题部分-->
 	<ul class="ti">
+		<li style="width: 90px" hidden><input type="checkbox" id="checkOrCancelAll" style="width: 20px;height: 20px" checked>全选</li>
 		<li class="first">商品/商品名称</li>
 		<li>属性</li>
-		<li>市场价</li>
-		<li>本店价</li>
+		<li>单价</li>
 		<li>购买数量</li>
 		<li>小计</li>
 		<li>操作</li>
 	<div style="clear:both"></div>
 	</ul>
+	<div id="mycheck">
+		<!--产品列表-->
+		{% for i in mycart %}
+			<div>
+				<ul class="List" id="{{ i.id }}">
+					<!--<li class="c1" style="width: 70px"><input type="checkbox" id="{{ i.id }}" class="c2" name="choose" style="width: 18px;height: 18px" checked></li>-->
+					<li class="first">
+						<a href="{% url 'gift:detail' i.good.id %}"><img src="/media/{{ i.good.img }}" width="100" height="100"/></a>
+						<p>{{ i.good.goodname }}</p>
+					</li>
+					<li>颜色:
+						{% for c in i.good.color.all %}
+							{{ c.title }}
+						{% endfor %}
+					</li>
+					<li>￥<input type="text" name="oneprice" value="{{ i.good.price }}" style="height: 30px;width: 50px">元</li>
+					<li><input type="number" name="goodnum" class="inputBg" id="num{{ i.id }}" value="{{ i.num }}" min="1"  style="height: 30px;width: 50px" /></li>
+					<li><input type="text" id="sumprice{{ i.id }}" value="{% widthratio i.good.price 1 i.num %}" style="height: 30px;width: 50px"></input>元</li>
+					<li><a href="{% url 'gift:delcart' i.id %}" class="f6">删除</a></li>
+					<div style="clear:both"></div>
+				</ul>
+				<!--数量框的数量-->
+				<script>
+					$("#"+"num{{ i.id }}").click(function () {
+						$.ajax({
+							url:"{% url 'gift:changenum' i.id %}",
+							type:"post",
+							data:{
+								"csrfmiddlewaretoken":"{{ csrf_token }}",
+								"num":$("#"+"num{{ i.id }}").val(),
+							},
+							success:function(data){
+								$("#"+"num{{ i.id }}").val(data.num)
+								price = data.sumprice
+								document.getElementById("sumprice{{ i.id }}").setAttribute("value",price)
+							}
+						})
+					})
+				</script>
+			</div>
+		{% endfor %}
+	</div>
 
-	<!--产品列表-->
-	<ul class="List">
-		<li class="first">
-			<img src="/static/images/bimg.png" width="100" height="100"/>
-			<p>送给清心的生日蛋糕，红色的代表浪班套餐课程</p>
-		</li>
-		<li>颜色:黑色 </li>
-		<li>￥224.00元</li>
-		<li>￥124.00元</li>
-		<li><input type="text" class="inputBg" /></li>
-		<li>￥124.00元</li>
-		<li><a href="" class="f6">操作</a></li>
-	<div style="clear:both"></div></ul>
-
-	<ul class="List">
-		<li class="first">
-			<img src="/static/images/bimg.png" width="100" height="100"/>
-			<p>送给清心的生日蛋糕，红色的代表浪班套餐课程</p>
-		</li>
-		<li>颜色:黑色 </li>
-		<li>￥224.00元</li>
-		<li>￥124.00元</li>
-		<li><input type="text" class="inputBg" /></li>
-		<li>￥124.00元</li>
-		<li><a href="" class="f6">操作</a></li>
-	<div style="clear:both"></div></ul>
-
-	<ul class="List">
-		<li class="first">
-			<img src="/static/images/bimg.png" width="100" height="100"/>
-			<p>送给清心的生日蛋糕，红色的代表浪班套餐课程</p>
-		</li>
-		<li>颜色:黑色 </li>
-		<li>￥224.00元</li>
-		<li>￥124.00元</li>
-		<li><input type="text" class="inputBg" /></li>
-		<li>￥124.00元</li>
-		<li><a href="" class="f6">操作</a></li>
-	<div style="clear:both"></div></ul>
 </div>
 <!--订单产品布局结束-->
 
-
 <!--订单结算部分开始-->
 <div id="dd_End">
-	购物金额小计 <font>￥9719.00元</font>，比市场价 ￥11662.80元 节省了 ￥1943.80元 (17%)
-	<input type="button" value="清空购物车"  class="bnt_blue_1"/>
-	<input type="submit" value="更新购物车" class="bnt_blue_1" />
+	<font></font>
+	<input type="button" value="清空购物车" id="clearcart"  class="bnt_blue_1"/>
+	<input type="submit" value="" style="background-color: white" /><br>
 
 	<p> 
-		<a href="Product.html" target="_blank"  class="go"><img src="/static/images/20130425D_03.png" /></a>
-		<a href="consignee.html" class="end"><img src="/static/images/20130425D_01.png" /></a>
+		<a href="{% url 'gift:product' %}" target="_blank"  class="go"><img src="/static/images/20130425D_03.png" /></a>
+		<a class="end" id="summycart"><img src="/static/images/01.png" /></a>
 	</p>
 <div style="clear:both;" ></div>
 </div>
 <!--订单结算部分结束-->
-
-
 
 <!--网站底部开始-->
 <img src="/static/images/f.jpg"  class="fbg"/>
@@ -201,19 +185,50 @@
 
 	<div style="clear:both"></div>
 </div>
-
-
 <p class="Copy">版权所有：礼品商城 备案号：备13016338号</p>
 <!--网站底部结束-->
 
+<!--结算生成订单-->
+<script>
 
+	$('#summycart').click(function (e) {
+		// //获得订单生成的时间
+		// var date = new Date($.ajax({async: false}).getResponseHeader("Date"));
+		// var d = date + (3600000 * 8);
+		// var t = new Date(d);
+		// var time = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate() + ' ' + t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds();
+		// // console.log(time)
+		$.ajax({
+			url:"{% url 'gift:createmyorder' %}",
+			type:"post",
+			data:{
+				"csrfmiddlewaretoken":"{{ csrf_token }}",
+			},
+			success:function (data) {
+				alert(data.sum)
+				window.location = '/cart/'
+			}
+		})
+	})
+</script>
 
+<!--清空购物车-->
+<script>
+	$("#clearcart").click(function () {
+		$.ajax({
+			url:"{% url 'gift:clearcart' %}",
+			type:"post",
+			data:{
+				"csrfmiddlewaretoken":"{{ csrf_token }}",
+			},
+			success:function (data) {
+				alert(data.sum)
+				window.location = '/cart/'
+			}
+		})
+	})
 
-
-
-<script type="text/javascript" src="/static/js/jquery.js"></script>
-<script type="text/javascript" src="/static/js/index.js"></script>
-
+</script>
 
 
 <!--

@@ -1,0 +1,243 @@
+<!doctype html>
+<!--加载模板标签-->
+{% load my_func %}
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>商品列表--礼品商城</title>
+ <!--引用外部样式-->
+ <link type="text/css" rel="stylesheet"  href="/static/css/basic.css">
+ <link type="text/css" rel="stylesheet"  href="/static/css/web.css">
+
+<script type="text/javascript" src="/static/js/jquery.js"></script>
+<script type="text/javascript" src="/static/js/index.js"></script>
+ </head>
+ <body>
+
+<!--网站顶部开始-->
+<div id="TopMain">
+	<!--Top开始-->
+	<div id="Top">
+		<div class="banner"><a href="{% url 'gift:index' %}"><img src="/static/images/logo.png" /></a></div>
+		<!--search begin-->
+		<div class="search">
+			<form>
+				<input type="text"  class="txt"/>
+				<input type="submit" class="but"  value=""/>
+			</form>
+		</div>
+		<!--search end-->
+		<div class="user">
+			{% if user.member.status == 1 %}
+				<!--用户登录后状态-->
+			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="{% url 'gift:myorder' %}" class="usertxt">订单中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
+			{% else %}
+				<!--用户登录前状态-->
+				<span id="nouser"><font><span class="iconfont">&#xe60b;</span><a href="{% url 'gift:login' %}">登录</a></font>
+				<font><span class="iconfont">&#xe60e;</span><a href="{% url 'gift:regist' %}">注册</a></font></span>
+			{% endif %}
+			</div>
+	</div>
+	<!--Top结束-->
+</div>
+<!--网站顶部结束-->
+
+<!--导航开始-->
+<div id="Logo" >
+	<ul>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">首页</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">生日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">鲜花</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">蛋糕</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">节日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">个性定制</a></li>
+		<li class="last"></li>
+	</ul>
+</div>
+<!--导航结束-->
+
+<!--内容推荐开始-->
+<div id="webIntro">
+	<div class="webIntroCon">
+		<!--热点推荐开始-->
+		<div class="hotIntro">
+			<img src="/static/images/webintro.jpg"  class="hotimg"/>
+			<div class="hotList">
+				{% gethighsalegoods 3 as highsalegoods %}
+
+				{% for good in highsalegoods %}
+					<dl>
+						<dt><a href="{% url 'gift:detail' good.id %}"><img src="/media/{{ good.img }}" /></a></dt>
+						<dd class="ti">{{ good.goodname }}</dd>
+						<dd class="money"><font>￥{{ good.price }}</font></dd>
+						<dd class="buy"><a href="{% url 'gift:detail' good.id %}">查看详情</a></dd>
+					</dl>
+				{% endfor %}
+			</div>
+		</div>
+		<!--热点推荐结束-->
+
+	</div>
+</div>
+<!--内容推荐结束-->
+
+
+
+<!--礼物综合搜综分类开始-->
+<div id="searchType">
+	<h3>礼物综合搜索</h3>
+
+	<dl>
+		<dt>商品分类:</dt>
+		<dd class="list">
+			{% getallcategory as allcategory %}
+				<a href="{% url 'gift:product' %}"><span class="all" >全部</span></a>
+				{% for cate in allcategory %}
+					{% if forloop.counter == 1 %}
+					<a><span class="all"id="cate{{ cate.id }}" ></span></a>
+					{% else %}
+					<a><span class="" id="cate{{ cate.id }}">{{ cate.title }}</span></a>
+					{% endif %}
+
+					<script>
+						$.ajax({
+								url:"{% url 'gift:all' %}",
+								type:"post",
+								data:{
+									"csrfmiddlewaretoken":"{{ csrf_token }}",
+									},
+								success:function(data){
+									$("#cg").children().remove()
+									for(i=0;i<data.length;i++){
+										goodname = data[i].goodname
+										price = data[i].price
+										sale = data[i].sale
+										maximg = data[i].maximg
+										id = data[i].id
+										$("#cg").append('<li><a href="/detail/'+id+'"><img src="/media/'+maximg+'" width="200" height="200" /></a><h3>'+goodname+'</h3><p><span>￥'+price+'</span></p><p>本产品售销量：<font>'+sale+'</font></p></li>')
+									}
+								}
+							})
+
+						$("#"+"cate{{ cate.id }}").click(function(){
+							$("#"+"cate{{ forloop.counter }}").siblings("span").removeClass("all")
+							$("#"+"cate{{ forloop.counter }}").attr('class','all')
+							$.ajax({
+								url:"{% url 'gift:diffcategory' cate.id %}",
+								type:"post",
+								data:{
+									"csrfmiddlewaretoken":"{{ csrf_token }}",
+									},
+								success:function(data){
+									$("#cg").children().remove()
+									for(i=0;i<data.length;i++){
+										goodname = data[i].goodname
+										price = data[i].price
+										sale = data[i].sale
+										maximg = data[i].maximg
+										id = data[i].id
+										$("#cg").append('<li><a href="/detail/'+id+'"><img src="/media/'+maximg+'" width="200" height="200" /></a><h3>'+goodname+'</h3><p><span>￥'+price+'</span></p><p>本产品售销量：<font>'+sale+'</font></p></li>')
+									}
+								}
+							})
+						})
+					</script>
+				{% endfor %}
+		</dd>
+		<div style="clear:both"></div>
+	</dl>
+
+</div>
+<!--礼物综合搜综分类结束-->
+
+<!--产品展示部分开始-->
+<div id="ProductList">
+	<div class="ti">商口显示</div>
+
+	<ul id="cg">
+
+
+	</ul>
+
+<div style="clear:both;"></div>
+</div>
+<!--产品展示部分结束-->
+
+
+
+<!--网站底部开始-->
+<img src="/static/images/f.jpg"  class="fbg"/>
+<div id="Footer2">
+	<dl class="first">
+		<dt><a href="#">关于我们</a></dt>
+		<dd><a href="#">诚聘英才</a></dd>
+		<dd><a href="#">品牌入驻</a></dd>
+		<dd><a href="#">友情链接</a></dd>
+	</dl>
+	<dl>
+		<dt><a href="#">关于我们</a></dt>
+		<dd><a href="#">诚聘英才</a></dd>
+		<dd><a href="#">品牌入驻</a></dd>
+		<dd><a href="#">友情链接</a></dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl>
+		<dt>关于我们</dt>
+		<dd>诚聘英才</dd>
+		<dd>品牌入驻</dd>
+		<dd>友情链接</dd>
+	</dl>
+	<dl class="last">
+		<dt>客服在线</dt>
+		<dd>4006-600-000</dd>
+		<dd><img src="images/QQ.jpg" /></dd>
+	</dl>
+
+	<div style="clear:both"></div>
+</div>
+
+
+<p class="Copy">版权所有：礼品网 备案号：备13016338号</p>
+<!--网站底部结束-->
+
+
+
+
+
+
+<!--
+	1、在News大盒子里面，构建两个一样大小的长方形，一个用来设背景透明，一个利用绝定位，盖在透明
+	图层上面，用来放内容
+	2、利用 h3标签来制作标题部分（颜色，大小，字体类型，竖直居中，首行缩进text-indent:20px;）
+	3、利用 ul来制作新闻列表，文字竖直间距利用行高 line-height:30px;  给 ul添加对应的内边距，使文字与上右下左产生一定的间距。
+	4、给文字加上了 a标签超链接，如何优化我们代码，代码的性能,如果把常用样式，统一初始化，我们选择的是用标签来表达，而不是用 *
+-->
+
+ </body>
+</html>

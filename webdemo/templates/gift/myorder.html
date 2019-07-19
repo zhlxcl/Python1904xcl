@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  	<meta charset="UTF-8">
+  	<title>订单--礼品商城</title>
+ <!--引用外部样式-->
+ 	<link type="text/css" rel="stylesheet"  href="/static/css/basic.css">
+ 	<link type="text/css" rel="stylesheet"  href="/static/css/web.css">
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/index.js"></script>
+
+</head>
+<body>
+<!--网站顶部开始-->
+<div id="TopMain">
+	<!--Top开始-->
+	<div id="Top">
+		<div class="banner"><a href="{% url 'gift:index' %}"><img src="/static/images/logo.png" /></a></div>
+		<!--search begin-->
+		<div class="search">
+			<form>
+				<input type="text"  class="txt"/>
+				<input type="submit" class="but"  value=""/>
+			</form>
+		</div>
+		<!--search end-->
+		<div class="user">
+			{% if user.member.status == 1 %}
+				<!--用户登录后状态-->
+			<span id="user">您好！<span style="color: red">{{ user.username}}</span>,欢迎你回来 <a href="{% url 'gift:myorder' %}" class="usertxt">订单中心</a>｜<a href="{% url 'gift:logout' user.id %}" class="usertxt">退出</a>
+				<font><span class="iconfont">&#xe646;</span><a href="{% url 'gift:cart' %}" target="_blank">我的购物车</a></font></span>
+			{% else %}
+				<!--用户登录前状态-->
+				<span id="nouser"><font><span class="iconfont">&#xe60b;</span><a href="{% url 'gift:login' %}">登录</a></font>
+				<font><span class="iconfont">&#xe60e;</span><a href="{% url 'gift:regist' %}">注册</a></font></span>
+			{% endif %}
+			</div>
+	</div>
+	<!--Top结束-->
+</div>
+<!--网站顶部结束-->
+
+<!--导航开始-->
+<div id="Logo" >
+	<ul>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">首页</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}" target="_blank">生日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">鲜花</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">蛋糕</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">节日礼物</a></li>
+		<li><a href=""></a></li>
+		<li><a href="{% url 'gift:index' %}">个性定制</a></li>
+		<li class="last"></li>
+	</ul>
+</div>
+<!--导航结束-->
+
+
+<!--订单产品布局开始-->
+<div id="dd_List">
+	<!--标题部分-->
+	<ul class="ti">
+		<li>订单总价</li>
+		<li>订单时间</li>
+        <li>订单详情</li>
+	</ul>
+	<div id="mycheck">
+		<!--产品列表-->
+		{% for i in orderlist %}
+            <ul class="List">
+                <li>{{ i.sum }}元</li>
+                <li>{{ i.create_time }}</li>
+                <li>查看详情</li>
+            </ul>
+		{% endfor %}
+	</div>
+
+</div>
+<!--订单产品布局结束-->
+
+
+</body>
+</html>
