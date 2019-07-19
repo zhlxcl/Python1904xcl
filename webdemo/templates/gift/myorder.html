@@ -77,8 +77,26 @@
             <ul class="List">
                 <li>{{ i.sum }}元</li>
                 <li>{{ i.create_time }}</li>
-                <li>查看详情</li>
+                <li id="{{ i.id }}">查看详情</li>
+                <div id="detail{{ i.id }}"></div>
             </ul>
+            <script>
+                $("#"+"{{ i.id }}").click(function () {
+                    $("#"+"detail{{ i.id }}").children().remove()
+                    $.ajax({
+							url:"{% url 'gift:showorderdetail' i.id %}",
+							type:"post",
+							data:{
+								"csrfmiddlewaretoken":"{{ csrf_token }}",
+							},
+							success:function(data){
+                                for(i=0;i<data.length;i++){
+                                    $("#"+"detail{{ i.id }}").append('<span>商品名：<a href="/detail/'+data[i].id+'">'+data[i].goodname+'</a>---单价：'+data[i].price+'元</span><br>')
+                                }
+							}
+                    })
+                })
+            </script>
 		{% endfor %}
 	</div>
 

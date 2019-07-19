@@ -44,4 +44,6 @@ urlpatterns = [
 
 
     url(r'^myorder/$', views.myorder, name="myorder"),
+
+    url(r'^showorderdetail/(\d+)/$', views.showorderdetail, name="showorderdetail"),
 ]

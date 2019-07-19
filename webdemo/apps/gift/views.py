@@ -324,6 +324,21 @@ def myorder(request):
     orderlist = Order.objects.filter(user=request.user)
     return render(request,"gift/myorder.html",locals())
 
+# 查看订单详情
+def showorderdetail(request,id):
+    order = Order.objects.get(pk=id)
+    ordergood = order.ordergoods_set.all()
+    # print(ordergood)
+    goodlist = []
+    for i in ordergood:
+        good = {
+            'goodname':i.good.goodname,
+            'id':i.good.id,
+            'price':i.good.price,
+        }
+        goodlist.append(good)
+    return JsonResponse(goodlist,safe=False)
+
 
 
 # 用户收货信息
