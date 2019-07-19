@@ -156,6 +156,12 @@ def createmyorder(request):
             price = i.good.price
             num = i.num
             sum += price * num
+            g = Good.objects.get(pk=i.good.id)
+            newstock = g.stock - num
+            newsale = g.sale + num
+            g.stock = newstock
+            g.sale = newsale
+            g.save()
 
         order = Order()
         order.sum = sum
@@ -316,10 +322,6 @@ def recommend(request,id):
 # 所有订单信息
 def myorder(request):
     orderlist = Order.objects.filter(user=request.user)
-    # print(orderlist)
-    # for i in orderlist:
-    #     print(i)
-    #     print(i.sum)
     return render(request,"gift/myorder.html",locals())
 
 
